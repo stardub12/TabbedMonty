@@ -17,11 +17,12 @@ class NCardMontyViewController: UIViewController {
     let howManyCards: Int
     
     let brain: MontyBrain
-    
+    var loaded: Bool
     let resetTitle = "Reset"
     
     required init?(coder aDecoder: NSCoder) {
         self.howManyCards = 19
+        self.loaded = false
         self.brain = MontyBrain(numCards: self.howManyCards)
         super.init(coder: aDecoder)
     }
@@ -31,20 +32,20 @@ class NCardMontyViewController: UIViewController {
     
 
     }
-    
+
     override func viewDidLayoutSubviews() {
-        setUpGameButtons(v: buttonContainer, totalButtons: self.howManyCards, buttonsPerRow: 6)
-        self.view.setNeedsDisplay()
+        if !loaded {
+            setUpGameButtons(v: buttonContainer, totalButtons: self.howManyCards, buttonsPerRow: 6)
+            self.view.setNeedsDisplay()
+        }
+        loaded = true
     }
     
     func resetButtonColors() {
-        for v in view.subviews {
+        for v in buttonContainer.subviews {
             if let button = v as? UIButton {
-                if button.currentTitle != resetTitle {
-                    button.backgroundColor = UIColor.blue
-                    button.isEnabled = true
-                    
-                }
+                button.backgroundColor = UIColor.blue
+                button.isEnabled = true
             }
         }
     }
@@ -55,11 +56,9 @@ class NCardMontyViewController: UIViewController {
     }
     
     func disableCardButtons() {
-        for v in view.subviews {
+        for v in buttonContainer.subviews {
             if let button = v as? UIButton {
-                if button.currentTitle != resetTitle {
-                    button.isEnabled = false
-                }
+                button.isEnabled = false
             }
         }
     }
