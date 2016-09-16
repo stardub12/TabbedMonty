@@ -11,7 +11,9 @@ import UIKit
 
 class NCardMontyViewController: UIViewController {
     
-    var gameLabel: UILabel!
+    @IBOutlet weak var gameLabel: UILabel!
+    @IBOutlet weak var buttonContainer: UIView!
+    
     let howManyCards: Int
     
     let brain: MontyBrain
@@ -19,14 +21,19 @@ class NCardMontyViewController: UIViewController {
     let resetTitle = "Reset"
     
     required init?(coder aDecoder: NSCoder) {
-        self.howManyCards = 21
+        self.howManyCards = 19
         self.brain = MontyBrain(numCards: self.howManyCards)
         super.init(coder: aDecoder)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpGameButtons()
+
+    }
+    
+    override func viewDidLayoutSubviews() {
+                setUpGameButtons(v: buttonContainer, totalButtons: self.howManyCards, buttonsPerRow: 6)
+        self.view.setNeedsDisplay()
     }
     
     func resetButtonColors() {
@@ -56,7 +63,11 @@ class NCardMontyViewController: UIViewController {
         }
     }
     
-    @IBAction func buttonTapped(_ sender: UIButton) {
+    @IBAction func resetTapped(_ sender: UIButton) {
+        handleReset()
+    }
+    
+    func buttonTapped(_ sender: UIButton) {
         gameLabel.text = sender.currentTitle
         
         if brain.checkCard(sender.tag - 1) {
@@ -81,28 +92,24 @@ class NCardMontyViewController: UIViewController {
     }
     
     func setUpGameLabel () {
-        gameLabel = UILabel()
         gameLabel.text = "Let's Play!"
-        view.addSubview((gameLabel))
-        gameLabel.translatesAutoresizingMaskIntoConstraints = false
-        gameLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 40).isActive = true
-        gameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
-    func setUpGameButtons() {
+    func setUpGameButtons(v: UIView, totalButtons: Int, buttonsPerRow : Int) {
         for i in 1...howManyCards {
-            let y = ((i - 1) / 3) + 1
-            let x = ((i - 1) % 3) + 1
+            let y = ((i - 1) / buttonsPerRow)
+            let x = ((i - 1) % buttonsPerRow)
+            let side : CGFloat = v.bounds.size.width / CGFloat(buttonsPerRow)
             
-            let rect = CGRect(origin: CGPoint(x: (Double(50 * x) + 50), y: (Double(y * 50) + 50) + 50), size: CGSize(width: 40, height: 40))
+            let rect = CGRect(origin: CGPoint(x: side * CGFloat(x), y: (CGFloat(y) * side)), size: CGSize(width: side, height: side))
             let button = UIButton(frame: rect)
             button.tag = i
             button.backgroundColor = UIColor.blue
             button.setTitle(String(i), for: UIControlState())
             button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-            self.view.addSubview(button)
+            v.addSubview(button)
         }
-        setUpResetButton()
+
         setUpGameLabel()
     }
 }
