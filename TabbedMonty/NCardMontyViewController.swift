@@ -28,11 +28,12 @@ class NCardMontyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
 
     }
     
     override func viewDidLayoutSubviews() {
-                setUpGameButtons(v: buttonContainer, totalButtons: self.howManyCards, buttonsPerRow: 6)
+        setUpGameButtons(v: buttonContainer, totalButtons: self.howManyCards, buttonsPerRow: 6)
         self.view.setNeedsDisplay()
     }
     
@@ -68,13 +69,16 @@ class NCardMontyViewController: UIViewController {
     }
     
     func buttonTapped(_ sender: UIButton) {
-        gameLabel.text = sender.currentTitle
+        if let title = sender.currentTitle {
+            gameLabel.text = title
+            print(title)
+        }
+        
         
         if brain.checkCard(sender.tag - 1) {
             gameLabel.text = "Winner winner chicken dinner!"
             sender.backgroundColor = UIColor.green
             disableCardButtons()
-            
             
         } else {
             gameLabel.text = "Nope! Guess again."
@@ -106,6 +110,7 @@ class NCardMontyViewController: UIViewController {
             button.tag = i
             button.backgroundColor = UIColor.blue
             button.setTitle(String(i), for: UIControlState())
+            button.isUserInteractionEnabled = true
             button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
             v.addSubview(button)
         }
