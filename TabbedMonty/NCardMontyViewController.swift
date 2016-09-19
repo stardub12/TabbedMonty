@@ -21,7 +21,7 @@ class NCardMontyViewController: UIViewController {
     let resetTitle = "Reset"
     
     required init?(coder aDecoder: NSCoder) {
-        self.howManyCards = 19
+        self.howManyCards = 100
         self.loaded = false
         self.brain = MontyBrain(numCards: self.howManyCards)
         super.init(coder: aDecoder)
@@ -35,7 +35,7 @@ class NCardMontyViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         if !loaded {
-            setUpGameButtons(v: buttonContainer, totalButtons: self.howManyCards, buttonsPerRow: 6)
+            setUpGameButtons(v: buttonContainer, totalButtons: self.howManyCards, buttonsPerRow: 10)
             self.view.setNeedsDisplay()
         }
         loaded = true
@@ -86,7 +86,7 @@ class NCardMontyViewController: UIViewController {
     }
     
     func setUpResetButton() {
-        let resetRect = CGRect(x: 10, y: 300, width: 60, height: 40)
+        let resetRect = CGRect(x: 150, y: 550, width: 60, height: 40)
         let resetButton = UIButton(frame: resetRect)
         resetButton.setTitle(resetTitle, for: UIControlState())
         resetButton.backgroundColor = UIColor.darkGray
@@ -113,6 +113,7 @@ class NCardMontyViewController: UIViewController {
             button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
             v.addSubview(button)
         }
+        setUpResetButton()
 
         setUpGameLabel()
     }
